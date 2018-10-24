@@ -1,0 +1,31 @@
+- Name: "Assimp"
+	URL: http://www.assimp.org/
+	Version: 3.0.0
+	License: http://assimp.sourceforge.net/main_license.html
+
+- Name: The OpenGL Extension Wrangler Library (glew)
+	URL: https://github.com/coapp-packages/glew
+	Version: 1.9.0.1
+	License: https://github.com/coapp-packages/glew/blob/master/LICENSE.txt
+
+- Name: GLFW
+	URL: https://bitbucket.org/sgrottel_nuget/glfw/overview
+	Version: 3.2.1.5
+	License: http://www.glfw.org/license.html
+
+- Name: OpenGL Mathematics (GLM) NuGet
+	URL: https://bitbucket.org/sgrottel_nuget/glm
+	Version: 0.9.9
+	License: https://glm.g-truc.net/copying.txt
+
+- Name: nupengl.core
+	URL: https://github.com/jcdickinson/NupenGL
+	Version: 0.1.0.1
+	License: https://cdn.rawgit.com/jcdickinson/NupenGL/master/License.txt
+
+- Name: soil
+	URL: http://www.lonesock.net/soil.html
+	Version: 1.16.0
+	License: Public Domain 
+
+	

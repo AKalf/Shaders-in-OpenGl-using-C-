@@ -1,0 +1,16 @@
+Description:
+	- Reads obj type of files and extract data from them. 
+	- Uses the API of "ASSIMP" (https://github.com/assimp/assimp).
+
+Types of readable data: 
+	# Vertices of a 3D model
+	# Normals of a 3D model
+	# The program calculates the faces of the 3D model
+	# Texture coordinations
+	# Tangent and Bitangent
+The program also reads any MTL files for:
+	# Diffuse textures
+	# Specular textures
+	# Normal textures
+	# Heightmap textures
+
