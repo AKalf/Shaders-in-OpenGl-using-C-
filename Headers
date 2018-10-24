@@ -1,0 +1,267 @@
+
+#include <glm\common.hpp>
+
+// position
+glm::vec3 position = glm::vec3(0, 0, 5);
+// horizontal angle : toward -Z
+float horizontalAngle = 3.14f;
+// vertical angle : 0, look at the horizon
+float verticalAngle = 0.0f;
+// Initial Field of View
+float initialFoV = 45.0f;
+
+float speed = 3.0f; // 3 units / second
+float mouseSpeed = 0.005f;
+
+// Get mouse position
+int xpos, ypos;
+
+
+#ifndef __MyTutLearnOpenGL_H_INCLUDED__
+#define __MyTutLearnOpenGL_H_INCLUDED__
+#include "ModelLoader.h"
+#include "MyShader.h"
+#include "CameraControls.h"
+#include <glm\gtc\type_ptr.hpp>
+//#include "MyOBJLoader.h";
+
+GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path);
+
+bool MyOGLInitialize();
+
+#endif
+
+
+#pragma once
+#ifndef _VERTICIESSTRUCTURES_H_INCLUDED_
+#define _VERTICIESSTRUCTURES_H_INCLUDED_
+
+#include <soil.h>
+#include <assimp\scene.h>
+#include <assimp\postprocess.h>
+#include <assimp\Importer.hpp>
+#include "CameraControls.h"
+
+using std::vector;
+using std::string;
+
+unsigned int TextureFromFile(const char *path, const std::string &directory, bool gamma = false);
+struct Vertex {
+	// position
+	glm::vec3 Position;
+	// normal
+	glm::vec3 Normal;
+	// texCoords
+	glm::vec2 TexCoords;
+	// tangent
+	glm::vec3 Tangent;
+	// bitangent
+	glm::vec3 Bitangent;
+};
+struct Texture {
+	unsigned int id;
+	string type;
+	string path;
+};
+class Mesh {
+public:
+	/*  Mesh Data  */
+	vector<Vertex> vertices;
+	vector<unsigned int> indices;
+	vector<Texture> textures;
+	unsigned int VAO;
+
+	/*  Functions  */
+	// constructor
+	Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures);
+	
+	// render the mesh
+	void Draw(GLuint programID);
+
+private:
+	/*  Render data  */
+	unsigned int VBO, EBO;
+
+	/*  Functions    */
+	// initializes all the buffer objects/arrays
+	void setupMesh();
+	
+};
+
+class Model
+{
+	
+public:
+	Model(string const &path, bool gamma, GLuint programID);
+	/*  Model Data */
+	vector<Texture> textures_loaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
+	vector<Mesh> meshes;
+	glm::vec3 position;
+	string directory;
+	bool gammaCorrection;
+	string name;
+	TxtDebugFile* PmodelDebugger;
+	/*  Functions   */
+	void Translate(float x, float y, float z);
+	void Rotate(glm::vec3 axis, float angle);
+	// draws the model, and thus all its meshes
+	void Draw();
+
+private:
+	GLuint shaderProgramID;
+	/*  Functions   */
+	// loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
+	void loadModel(string const &path);
+	
+
+	// processes a node in a recursive fashion. Processes each individual mesh located at the node and repeats this process on its children nodes (if any).
+	void processNode(aiNode *node, const aiScene *scene);
+
+	Mesh processMesh(aiMesh *mesh, const aiScene *scene);
+
+	// checks all material textures of a given type and loads the textures if they're not loaded yet.
+	// the required info is returned as a Texture struct.
+	vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, string typeName);
+};
+#endif
+#pragma once
+#ifndef _FSTREAM_
+#include <fstream>
+#endif // _fstream_
+
+
+class TxtDebugFile {
+	std::ofstream inFile;
+	public:
+	TxtDebugFile(std::string const &txtPath, bool overwrite);
+	void WriteOnTxt(std::string text);
+};
+
+#pragma once
+
+
+
+GLuint LoadShaders(const char* vertex_file_path, const char* fragment_file_path);
+
+class MyShader {
+	public:
+		MyShader(const char* vertexShaderPath, const char* fragmentShaderPath, const char* nameOfShader);
+		GLuint programID;
+		GLuint MatrixID;
+		GLuint ViewMatrixID;
+		GLuint ModelMatrixID;
+		const char* shaderName;
+		GLuint GetUniformLocation(const char* variableName);
+
+};
+#pragma once
+#ifndef __MYTIME_H_INCLUDED__
+#define __MYTIME_H_INCLUDED__
+
+
+
+
+// Calculates deltaTime. Need to be called every frame
+void UpdateDeltaTime();
+
+float GetMyDeltaTime();
+#endif
+// stdafx.h : include file for standard system include files,
+// or project specific include files that are used frequently, but
+// are changed infrequently
+//
+
+#pragma once
+
+#include "targetver.h"
+
+#include <stdio.h>
+#include <tchar.h>
+
+
+
+// TODO: reference additional headers your program requires here
+
+#pragma once
+
+// Including SDKDDKVer.h defines the highest available Windows platform.
+
+// If you wish to build your application for a previous Windows platform, include WinSDKVer.h and
+// set the _WIN32_WINNT macro to the platform you wish to support before including SDKDDKVer.h.
+#include <SDKDDKVer.h>
+
+
+#ifndef __CAMERACONTROLS_H_INCLUDED__
+#define __CAMERACONTROLS_H_INCLUDED__
+
+// Include standard headers
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
+
+
+// Include GLEW
+#include <GL/glew.h>
+#include <GL/freeglut.h>
+#include <GLFW/glfw3.h>
+
+// It is included in "MyTime.h"
+//#include <GLFW/glfw3.h> 
+
+// Include GLM
+#include <glm/glm.hpp>
+#include <glm\common.hpp>
+#include <glm\simd\common.h>
+#include <glm/gtx/transform.hpp> // after <glm/glm.hpp>
+#include <glm\gtc\matrix_transform.hpp>
+
+#include "MyTime.h"
+#include "MyDebug.h"
+
+using namespace glm;
+#define __LOAD_SHADERS_H__
+
+#define FOURCC_DXT1 0x31545844 // Equivalent to "DXT1" in ASCII
+#define FOURCC_DXT3 0x33545844 // Equivalent to "DXT3" in ASCII
+#define FOURCC_DXT5 0x35545844 // Equivalent to "DXT5" in ASCII
+
+// Initial Field of View
+const float initialFoV = 75.0f;
+
+const float speed = 3; // 3 units / second
+const float mouseSpeed = 0.0005f;
+
+
+
+
+class MyCamera {
+	private:
+		// Get mouse position
+		double xpos, ypos;
+		// Variables to calculate center of window
+		int currentWidth, currentHeight;
+		// horizontal angle : toward -Z
+		float horizontalAngle;
+		// vertical angle : 0, look at the horizon
+		float verticalAngle;
+
+		// position
+		glm::vec3 cameraPosition;
+
+		void MoveCamera(GLFWwindow* window, glm::vec3 cameraDirection, glm::vec3 right);
+
+	public:
+		MyCamera(glm::vec3 cameraPos);
+
+		void CameraUpdate(GLFWwindow* window, std::vector<glm::mat4>* matrices);
+
+		glm::vec3 GetCameraPosition();
+
+		
+	
+};
+#endif
