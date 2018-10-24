@@ -1,2 +1,2 @@
 # Shaders-in-OpenGl-using-C++
-A simple ".obj" file loader and shader manipulation using OpenGL. 
+A simple ".obj" file loader, vertex and fragment shaders using OpenGL. 
