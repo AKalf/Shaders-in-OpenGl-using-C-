@@ -1,0 +1,35 @@
+#version 330 core
+out vec4 FragColor;
+in vec3 Normals;
+in vec2 texCoords;
+in vec3 FragPos;
+uniform sampler2D ourTex;
+uniform vec3 LightPos;
+uniform float lightPower = 10.0f;
+uniform vec3 viewPos;
+uniform float Time;
+const vec3 specColor = vec3(1.0f, 1.0f, 1.0f);
+void main()
+{
+	float distance = length(LightPos - FragPos); 
+	float attenuation = lightPower / (distance);
+	vec3 lightDir = normalize(LightPos - FragPos);
+	vec3 viewDir = normalize (viewPos - FragPos);
+	vec3 halfwayDir = normalize(lightDir + viewDir);
+	vec3 textureColor = texture(ourTex, texCoords).rgb; //+ vec2(0.0, sin(Time/2.0))).rgb; (moves texture randomly)
+	//ambient Color
+	vec3 ambientColor = textureColor * 0.5f;
+
+	//diffuse Color
+	float diff = max(dot(Normals, lightDir), 0.0); 
+	vec3 diffuseColor = textureColor * diff; 
+	diffuseColor *= attenuation;
+
+	//specular Color
+	float specularAngle = max(dot(Normals, halfwayDir), 0.0);
+	float specShininess = pow(specularAngle, 10);
+	vec3 specularColor = specShininess * specColor * attenuation;
+	specularColor *= attenuation;
+
+   FragColor = vec4(ambientColor + diffuseColor + specularColor, 1.0f);
+}
